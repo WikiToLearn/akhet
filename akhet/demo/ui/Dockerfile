@@ -1,4 +1,4 @@
-FROM debian:8
+FROM debian:9
 
 ADD ./etc/apt/sources.list /etc/apt/sources.list
 
@@ -19,25 +19,15 @@ RUN apt-get install -y anacron && \
 RUN apt-get install -y apache2 && \
   rm -f /var/cache/apt/archives/*deb && \
   find /var/log/ -type f -delete
-RUN apt-get install -y php5 && \
+RUN apt-get install -y php && \
   rm -f /var/cache/apt/archives/*deb && \
   find /var/log/ -type f -delete
-RUN apt-get install -y php5-curl && \
+RUN apt-get install -y php-curl && \
   rm -f /var/cache/apt/archives/*deb && \
   find /var/log/ -type f -delete
-RUN apt-get install -y php5-dev && \
+RUN apt-get install -y php-yaml && \
   rm -f /var/cache/apt/archives/*deb && \
   find /var/log/ -type f -delete
-
-RUN apt-get install -y libyaml-dev && \
-  rm -f /var/cache/apt/archives/*deb && \
-  find /var/log/ -type f -delete
-RUN pecl install yaml && \
-  echo "extension=yaml.so" > /etc/php5/mods-available/yaml.ini && \
-  cd /etc/php5/cli/conf.d && \
-  ln -s ../../mods-available/yaml.ini 30-yaml.ini && \
-  cd /etc/php5/apache2/conf.d/ && \
-  ln -s ../../mods-available/yaml.ini 30-yaml.ini
 
 RUN a2enmod ssl
 RUN a2ensite default-ssl.conf

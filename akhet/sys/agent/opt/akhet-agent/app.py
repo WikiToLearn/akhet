@@ -50,7 +50,7 @@ while running:
     if is_online:
         images_list = []
         for image in dockerclient.images.list():
-            labels = image.attrs['Labels']
+            labels = image.attrs['ContainerConfig']['Labels']
             if labels != None and 'akhetimage' in labels and labels['akhetimage']:
                 repo_tags = image.attrs['RepoTags']
                 for tag in repo_tags:

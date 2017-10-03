@@ -1,4 +1,4 @@
-FROM debian:8
+FROM debian:9
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
@@ -9,7 +9,7 @@ RUN apt-get update && apt-get -y --force-yes install iptables && rm -f /var/cach
 RUN apt-get update && apt-get -y --force-yes install net-tools && rm -f /var/cache/apt/archives/*deb && find /var/lib/apt/lists/ -type f -delete && find /var/log/ -type f -delete
 RUN apt-get update && apt-get -y --force-yes install netcat-openbsd && rm -f /var/cache/apt/archives/*deb && find /var/lib/apt/lists/ -type f -delete && find /var/log/ -type f -delete
 
-ADD ./run.sh /opt/run.sh
-RUN chmod +x /opt/run.sh
+ADD ./entrypoint.sh /opt/entrypoint.sh
+RUN chmod +x /opt/entrypoint.sh
 
-ENTRYPOINT ["/opt/run.sh"]
+ENTRYPOINT ["/opt/entrypoint.sh"]

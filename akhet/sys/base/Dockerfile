@@ -1,4 +1,4 @@
-FROM debian:8
+FROM debian:9
 
 ADD ./etc/apt/sources.list /etc/apt/sources.list
 
@@ -17,6 +17,9 @@ RUN apt-get install -y build-essential && \
   rm -f /var/cache/apt/archives/*deb && \
   find /var/log/ -type f -delete
 RUN apt-get install -y libssl-dev && \
+  rm -f /var/cache/apt/archives/*deb && \
+  find /var/log/ -type f -delete
+RUN apt-get install -y ca-certificates && \
   rm -f /var/cache/apt/archives/*deb && \
   find /var/log/ -type f -delete
 

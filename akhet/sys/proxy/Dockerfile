@@ -14,7 +14,7 @@ ENV AKHET_CONF_DIR /etc/akhet/
 
 ENTRYPOINT /opt/entrypoint.sh
 
-EXPOSE 80 443
+EXPOSE 8080 8443
 
 ADD ./etc/ /etc/
 ADD ./var/www/html/ /var/www/html/

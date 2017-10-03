@@ -113,8 +113,6 @@ docker container run \
   --link akhet-api:api \
   --link akhet-agent:agent \
   --add-host `hostname -f`:`ip route get 8.8.8.8 | awk '/8.8.8.8/ {print $NF}'` \
-  -p 80:80 \
-  -p 443:443 \
   -v $CONFIG_PROXY:/etc/akhet-proxy.yml \
   akhet/sys/proxy:latest
 

@@ -5,3 +5,11 @@ api_username: agentuser1
 api_password: agentpass1
 #this_hostname: agent.akhet.tdl
 #use_ip_as_hostname: yes
+cuda:
+  enabled: yes
+  volume: "nvidia_driver_375.66"
+  devices:
+  - /dev/nvidiactl
+  - /dev/nvidia-uvm
+  - /dev/nvidia-uvm-tools
+  - /dev/nvidia0

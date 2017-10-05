@@ -38,12 +38,13 @@ class AkhetAgentInstanceRunner(threading.Thread):
         logger.debug("Port {} is now free".format(port_ws_vnc))
         return True
 
-    def __init__(self, dockerclient, instance, akhet_agent):
+    def __init__(self, dockerclient, instance, akhet_agent, cuda_config):
         super(AkhetAgentInstanceRunner, self).__init__()
         self.dockerclient = dockerclient
         self.instance = instance
         self.akhet_agent = akhet_agent
         self.logger = logging.getLogger(__name__ + "@" + self.instance.get_instance_id())
+        self.cuda_config = cuda_config
 
     def run(self):
         port_ws_vnc = None
@@ -97,9 +98,17 @@ class AkhetAgentInstanceRunner(threading.Thread):
                     read_only=True
                 )
 
-                # for cuda is needed something like
-                # devices=['/dev/nvidiactl:/dev/nvidiactl','/dev/nvidia-uvm:/dev/nvidia-uvm'],
-                # and a volume or something like that
+                devices = []
+                volumes = {}
+
+                if self.cuda_config['enabled']:
+                    if 'com.nvidia.cuda.version' in self.dockerclient.images.get(self.instance.get_image()).attrs['ContainerConfig']['Labels']:
+                        volumes[self.cuda_config['volume']] = {
+                            'mode':'ro',
+                            'bind':'/usr/local/nvidia',
+                        }
+                        for device in self.cuda_config['devices']:
+                            devices.append(device)
 
                 self.logger.info("Create docker for the user")
                 docker_obj = self.dockerclient.containers.create(
@@ -111,7 +120,9 @@ class AkhetAgentInstanceRunner(threading.Thread):
                     detach=True,
                     tty=True,
                     privileged=is_privileged,
-                    network_mode="container:akhet-instance-" +  self.instance.get_instance_id() + "-fw"
+                    network_mode="container:akhet-instance-" +  self.instance.get_instance_id() + "-fw",
+                    devices=devices,
+                    volumes=volumes
                 )
 
                 self.logger.info("Updateing the status")

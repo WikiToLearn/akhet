@@ -37,7 +37,6 @@ xterm:
 		-t akhet/images/ubuntu-16-04-xterm:latest \
 		akhet/images/ubuntu-16-04-xterm/
 
-
 .PHONY: gnome-base
 gnome-base:
 	docker image build \
@@ -86,3 +85,17 @@ plasma-science:
 	docker image build \
 		-t akhet/images/ubuntu-16-04-plasma-geant4:latest \
 akhet/images/ubuntu-16-04-plasma-geant4/
+
+
+
+.PHONY: base-cuda
+base-cuda:
+	docker image build \
+		-t akhet/base/image-ubuntu-16-04-cuda-8-0-devel:latest \
+		akhet/base/image-ubuntu-16-04-cuda-8-0-devel/
+
+.PHONY: xterm-cuda
+xterm-cuda:
+	docker image build \
+		-t akhet/images/ubuntu-16-04-xterm-cuda-8-0-devel:latest \
+		akhet/images/ubuntu-16-04-xterm-cuda-8-0-devel/

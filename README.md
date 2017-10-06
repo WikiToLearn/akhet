@@ -27,3 +27,5 @@ Akhet is a docker-oriented virtual-desktop environment infrastructure.
 * gnome-base (requires base): the base gnome image
 * gnome-dev (requires gnome-base): basic dev-tools with gnome UI
 * gnome-science (requires gnome-dev): root6 and geant4 images with debian
+* base-cuda: base image for cuda
+* xterm-cuda (requires base-cuda): xterm image with CUDA support

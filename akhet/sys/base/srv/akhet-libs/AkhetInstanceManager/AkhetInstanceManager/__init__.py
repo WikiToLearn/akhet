@@ -11,17 +11,19 @@ class AkhetInstanceManager(object):
         self.akhet_api_url = akhet_api_url
 
     def poll(self, images_list):
-        # FIXME: use images_list to filter pending images
-        payload = {}
-        payload['status'] = 'pending'
-        url = self.akhet_api_url+"/api/v1/instance?{}".format(
-            urllib.parse.urlencode({"where":json.dumps(payload)})
-        )
-        reply = requests.get(url)
-        self.created_pending = []
-        for item in reply.json()['_items']:
-            if item['image'] in images_list:
-                self.created_pending.append(item)
+        #for image_name in images_list:
+        if True:
+            payload = {}
+            payload['status'] = 'pending'
+            #payload['image'] = image_name
+            url = self.akhet_api_url+"/api/v1/instance?{}".format(
+                urllib.parse.urlencode({"where":json.dumps(payload)})
+            )
+            reply = requests.get(url)
+            self.created_pending = []
+            for item in reply.json()['_items']:
+                if item['image'] in images_list:
+                    self.created_pending.append(item)
 
     def get_pending(self,akhet_agent_obj):
         if len(self.created_pending) > 0:

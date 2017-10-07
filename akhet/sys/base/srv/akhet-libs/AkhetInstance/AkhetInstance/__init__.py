@@ -28,6 +28,27 @@ class AkhetInstance(object):
     def get_is_deleted(self):
         return self.this_instance['status'] == 'deleted'
 
+    def has_user_config(self):
+        return 'user' in self.this_instance
+
+    def get_username(self):
+        try:
+            return self.this_instance['user']['username']
+        except Exception as e:
+            return "akhet"
+
+    def get_user_label(self):
+        try:
+            return self.this_instance['user']['user_label']
+        except Exception as e:
+            return "Akhet"
+
+    def get_user_id(self):
+        try:
+            return self.this_instance['user']['user_id']
+        except Exception as e:
+            return 1000
+
     def set_pending(self):
         url = self.akhet_api_url+"/api/v1/instance/{}".format(self.get_instance_id())
         reply = requests.patch(

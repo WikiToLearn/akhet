@@ -68,8 +68,8 @@ try {
             $data['vnc_password'] = $randomString;
             $data['shared'] = true;
             $data['user'] = array();
-            $data['user']["username"] = "luca";
-            $data['user']["user_label"] = "Luca Toma";
+            $data['user']["username"] = "demouser";
+            $data['user']["user_label"] = "Demo User";
             $instance_id = $akhet_instance_manager->CreateInstance($data);
             header("Location: /?instance_id=" . $instance_id);
         } else {

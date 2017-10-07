@@ -37,6 +37,6 @@ ENV PYTHONUNBUFFERED=0
 
 STOPSIGNAL 9
 
-ADD ./tmp/ /tmp/
-RUN pip install /tmp/src_AkhetInstance/ && rm -Rf /tmp/src_AkhetInstance/
-RUN pip install /tmp/src_AkhetInstanceManager/ && rm -Rf /tmp/src_AkhetInstanceManager/
+ADD ./srv/akhet-libs/ /srv/akhet-libs/
+RUN pip install /srv/akhet-libs/AkhetInstance/ && rm -Rf /srv/akhet-libs/AkhetInstance/
+RUN pip install /srv/akhet-libs/AkhetInstanceManager/ && rm -Rf /srv/akhet-libs/AkhetInstanceManager/

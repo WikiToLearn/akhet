@@ -13,19 +13,17 @@ class AkhetAgentInstanceRunner(threading.Thread):
     used_ws_vnc_ports = []
 
     @staticmethod
-    def get_free_ws_vnc_port():
-        # FIXME: random is not a good "robust" solution
-        # FIXME: the range must be changed with a config
+    def get_free_ws_vnc_port(ws_port_range_config):
         port_ws_vnc = None
         while port_ws_vnc == None:
             AkhetAgentInstanceRunner.used_ws_vnc_ports_semaphore.acquire()
-            port_ws_vnc = randint(9090,19090)
+            port_ws_vnc = randint(ws_port_range_config['low'],ws_port_range_config['high'])
 
             if port_ws_vnc in AkhetAgentInstanceRunner.used_ws_vnc_ports:
                 port_ws_vnc = None
                 time.sleep(1)
-
-            AkhetAgentInstanceRunner.used_ws_vnc_ports.append(port_ws_vnc)
+            else:
+                AkhetAgentInstanceRunner.used_ws_vnc_ports.append(port_ws_vnc)
             AkhetAgentInstanceRunner.used_ws_vnc_ports_semaphore.release()
         logger.debug("Using port {}".format(port_ws_vnc))
         return port_ws_vnc
@@ -38,13 +36,14 @@ class AkhetAgentInstanceRunner(threading.Thread):
         logger.debug("Port {} is now free".format(port_ws_vnc))
         return True
 
-    def __init__(self, dockerclient, instance, akhet_agent, cuda_config):
+    def __init__(self, dockerclient, instance, akhet_agent, config):
         super(AkhetAgentInstanceRunner, self).__init__()
         self.dockerclient = dockerclient
         self.instance = instance
         self.akhet_agent = akhet_agent
         self.logger = logging.getLogger(__name__ + "@" + self.instance.get_instance_id())
-        self.cuda_config = cuda_config
+        self.cuda_config = config['cuda']
+        self.ws_port_range_config = config['ws_port_range']
 
     def run(self):
         port_ws_vnc = None
@@ -55,7 +54,7 @@ class AkhetAgentInstanceRunner(threading.Thread):
 
             if self.instance.get_is_assigned():
                 self.logger.info("Get VNC ws port")
-                port_ws_vnc = AkhetAgentInstanceRunner.get_free_ws_vnc_port()
+                port_ws_vnc = AkhetAgentInstanceRunner.get_free_ws_vnc_port(self.ws_port_range_config)
 
                 fw_env = {"whitelist":"HOST:192.168.0.0/24 HOST:172.16.0.0/12 HOST:10.0.0.0/8"}
                 #fw_env = {"blacklist":""}
@@ -72,14 +71,10 @@ class AkhetAgentInstanceRunner(threading.Thread):
 
                 instance_env['AKHETBASE_VNCPASS'] = self.instance.get_vnc_password()
 
-                # FIXME
-                if False and 'user' in instance:
-                    if 'username' in instance['user']:
-                        instance_env['AKHETBASE_USER'] = instance['user']['username']
-                    if 'user_label' in instance['user']:
-                        instance_env['AKHETBASE_USER_LABEL'] = instance['user']['user_label']
-                    if 'user_id' in instance['user']:
-                        instance_env['AKHETBASE_UID'] = instance['user']['user_id']
+                if self.instance.has_user_config():
+                    instance_env['AKHETBASE_USER'] = self.instance.get_username()
+                    instance_env['AKHETBASE_USER_LABEL'] = self.instance.get_user_label()
+                    instance_env['AKHETBASE_UID'] = self.instance.get_user_id()
 
                 is_privileged = self.instance.get_is_privileged()
 

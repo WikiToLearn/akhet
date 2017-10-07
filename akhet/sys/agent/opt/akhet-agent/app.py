@@ -19,8 +19,6 @@ config_stream = open("/etc/akhet-agent.yml", "r")
 config = yaml.load(config_stream)
 config_stream.close()
 
-cuda_config = config['cuda']
-
 akhet_api_base = str(config['api_protocol'])
 akhet_api_base = akhet_api_base + "://"
 akhet_api_base = akhet_api_base + str(config['api_username'])
@@ -68,7 +66,7 @@ while running:
             instance = akhet_instance_manager.get_pending(akhet_agent)
             logger.debug("Instance: {}".format(instance))
             if instance != None:
-                runner = AkhetAgentInstanceRunner(dockerclient, instance, akhet_agent, cuda_config)
+                runner = AkhetAgentInstanceRunner(dockerclient, instance, akhet_agent, config)
                 runner.start()
             else:
                 more_instances = False
